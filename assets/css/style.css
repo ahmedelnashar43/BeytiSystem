@@ -2,3 +2,29 @@
     display: none;
   }
   
+
+  .notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #28a745; /* Success color */
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.notification.error {
+    background-color: #dc3545; /* Error color */
+}
+
+.notification.show {
+    opacity: 1;
+}
+
+.hidden {
+    display: none;
+}
