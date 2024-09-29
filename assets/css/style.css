@@ -28,3 +28,9 @@
 .hidden {
     display: none;
 }
+
+
+/* CSS to change the background color */
+.selected {
+    background-color: lightgreen; /* Change this to your desired color */
+}

@@ -2,66 +2,48 @@
 import { db } from './firebaseConfig.js';
 import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
-// // Attach submitFormData to the window object
-// window.submitFormData = async function() {
-//     const shift = document.getElementById("Shift").value;
-//     const sampleCondition = document.getElementById("SampleCondition").value;
-//     const ph = document.getElementById("phInput").value;
-//     const acidity = document.getElementById("acidityInput").value;
-//     const density = document.getElementById("densityInput").value;
-//     const temp = document.getElementById("tempInput").value;
-//     const spGr = document.getElementById("spGrInput").value;
-//     const fat = document.getElementById("fatInput").value;
-//     const snf = document.getElementById("snfInput").value;
-//     const ts = document.getElementById("tsInput").value;
-//     const protein = document.getElementById("proteinInput").value;
-//     // const status = document.getElementById("statusInput").value;
-//     const analyst = document.getElementById("analystInput").value;
-
-//     try {
-//         await addDoc(collection(db, "labData"), {
-//             shift,
-//             sampleCondition,
-//             ph,
-//             acidity,
-//             density,
-//             temp,
-//             spGr,
-//             fat,
-//             snf,
-//             ts,
-//             protein,
-//             // status,
-//             analyst,
-//             timestamp: serverTimestamp()
-//         });
-//         alert("Form data submitted successfully!");
-//     } catch (error) {
-//         console.error("Error saving document: ", error);
-//     }
-// };
-
-
 // Attach submitFormData to the window object
 window.submitFormData = async function() {
+    // Get values from the form inputs
     const shift = document.getElementById("Shift").value;
+    const productType = document.getElementById("productType").value; // Product type input
     const sampleCondition = document.getElementById("SampleCondition").value;
-    const ph = document.getElementById("phInput").value;
-    const acidity = document.getElementById("acidityInput").value;
-    const density = document.getElementById("densityInput").value;
-    const temp = document.getElementById("tempInput").value;
-    const spGr = document.getElementById("spGrInput").value;
-    const fat = document.getElementById("fatInput").value;
-    const snf = document.getElementById("snfInput").value;
-    const ts = document.getElementById("tsInput").value;
-    const protein = document.getElementById("proteinInput").value;
-    // const status = document.getElementById("statusInput").value;
     const analyst = document.getElementById("analystInput").value;
 
+    // Convert input values to numbers and handle NaN cases
+    const ph = parseFloat(document.getElementById("phInput").value) || 0; // Default to 0 if NaN
+    const acidity = parseFloat(document.getElementById("acidityInput").value) || 0; // Default to 0 if NaN
+    const density = parseFloat(document.getElementById("densityInput").value) || 0; // Default to 0 if NaN
+    const temp = parseFloat(document.getElementById("tempInput").value) || 5; // Default to 5 if NaN
+    const spGr = parseFloat(document.getElementById("spGrInput").value) || 0; // Default to 0 if NaN
+    const fat = parseFloat(document.getElementById("fatInput").value) || 0; // Default to 0 if NaN
+    const snf = parseFloat(document.getElementById("snfInput").value) || 0; // Default to 0 if NaN
+    const ts = parseFloat(document.getElementById("tsInput").value) || 0; // Default to 0 if NaN
+    const protein = parseFloat(document.getElementById("proteinInput").value) || 0; // Default to 0 if NaN
+
+    // Log the collected data for debugging
+    console.log("Submitting Form Data:", {
+        shift,
+        productType,
+        sampleCondition,
+        analyst,
+        ph,
+        acidity,
+        density,
+        temp,
+        spGr,
+        fat,
+        snf,
+        ts,
+        protein
+    });
+
     try {
-        await addDoc(collection(db, "labData"), {
+        await addDoc(collection(db, "chemicallab"), {
             shift,
+            productType,
             sampleCondition,
+            analyst,
             ph,
             acidity,
             density,
@@ -71,9 +53,7 @@ window.submitFormData = async function() {
             snf,
             ts,
             protein,
-            // status,
-            analyst,
-            timestamp: serverTimestamp()
+            timestamp: serverTimestamp()  // Automatically capture the timestamp
         });
 
         // Show success notification
@@ -81,11 +61,12 @@ window.submitFormData = async function() {
 
     } catch (error) {
         console.error("Error saving document: ", error);
-
-        // Show error notification if submission fails
+        alert("Error: " + error.message);  // Alert the error message
         showNotification("There was an error submitting the form data.", "error");
     }
 };
+
+
 
 // Function to show a notification
 function showNotification(message, type) {
@@ -112,11 +93,6 @@ function showNotification(message, type) {
     }, 3000);
 }
 
-
-
-
-
-
 // Function to open confirmation modal
 window.openConfirmationModal = function() {
     const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
@@ -127,24 +103,21 @@ window.openConfirmationModal = function() {
 document.getElementById('confirmSubmitBtn').addEventListener('click', async () => {
     await submitFormData();
     const confirmationModal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
-    confirmationModal.hide(); // Close the modal after submission
+    confirmationModal.hide();  // Close the modal after submission
 });
-
-
-
 
 // Function to reset form fields
 window.resetdatafields = function() {
     console.log('Reset button clicked'); // Debugging message
-    const form = document.getElementById('form1'); // Ensure this ID matches your form ID
+    const form = document.getElementById('form1');  // Ensure this ID matches your form ID
     if (form) {
         // Reset all input fields in the form
         const inputs = form.querySelectorAll('input, select');
         inputs.forEach(input => {
             if (input.tagName.toLowerCase() === 'input') {
-                input.value = ''; // Reset input fields
+                input.value = '';  // Reset input fields
             } else if (input.tagName.toLowerCase() === 'select') {
-                input.selectedIndex = 0; // Reset select elements
+                input.selectedIndex = 0;  // Reset select elements
             }
         });
         console.log('Form fields reset'); // Debugging message
@@ -201,7 +174,7 @@ function resetDropdowns() {
     ];
 
     dropdowns.forEach(dropdown => {
-        dropdown.value = "0"; // Reset to default option
+        dropdown.value = "0";  // Reset to default option
     });
 }
 

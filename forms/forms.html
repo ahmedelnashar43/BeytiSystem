@@ -13,7 +13,8 @@
   <script type="module" src="formHandler.js"></script>
   <script type="module" src="dataRetrieval.js"></script>
   <script type="module" src="excelExport.js"></script>
-
+  <script src="../forms/script.js"></script>
+  
   <script src="../assets/js/demo.js"></script>
   <!-- Fonts and icons -->
   <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
@@ -568,7 +569,7 @@
                         <option value="0">Choose...</option>
                         <option value="form1">FF Milk</option>
                         <option value="form1">Product 2</option>
-                      </select>
+                      </select>                 
                     </div>
                   </div>
                 </div>
@@ -625,112 +626,127 @@
 
             <div id="form1" class="hidden">
               <h3>In Process Milk</h3>
-
+          
               <!-- Row 1 -->
               <div class="row mb-3">
-                <div class="col-md-3">
-                  <label for="Shift" class="form-label">Shift</label>
-                  <select class="form-control" id="Shift">
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                  </select>
+                  <div class="col-md-3">
+                      <label for="Shift" class="form-label">Shift</label>
+                      <select class="form-control" id="Shift">
+                          <option value="A">A</option>
+                          <option value="B">B</option>
+                      </select>
+                  </div>
+                  <div class="col-md-3">
+                      <label for="ProductType" class="form-label">Product Type</label>
+                      <select class="form-control" id="productType" >
+                          <option value="Milk">ff milk</option>
+                          <option value="Yoghurt">Hf milk</option>
+                          <option value="Cheese">skimmed milk</option>
+                          <option value="Juice">Whipping cream </option>
+                      </select>
+                  </div>
+                  <div class="col-md-3">
+                      <label for="SampleCondition" class="form-label">Sample Condition</label>
+                      <select class="form-control" id="SampleCondition">
+                          <option value="Ambient 25°C">Ambient 25°C</option>
+                          <option value="Cooled 4-7°C">Cooled 4-7°C</option>
+                          <option value="Warm > 25°C">Warm > 25°C</option>
+                      </select>
+                  </div>
+                  <div class="col-md-3">
+                    <label for="Analyst" class="form-label">Analyst</label>
+                    <select class="form-control" id="analystInput">
+                        <option value="" disabled selected>Select Analyst</option>
+                        <option value="Analyst1">Nashar</option>
+                        <option value="Analyst2">Gaber</option>
+                        <option value="Analyst3">Alhassan</option>
+                        <option value="Analyst4">Fawzy</option>
+                    </select>
                 </div>
-                <div class="col-md-3">
-                  <label for="SampleCondition" class="form-label">Sample Condition</label>
-                  <select class="form-control" id="SampleCondition">
-                    <option value="Ambient 25°C">Ambient 25°C</option>
-                    <option value="Cooled 4-7°C">Cooled 4-7°C</option>
-                    <option value="Warm > 25°C">Warm > 25°C</option>
-                  </select>
-                </div>
-                <div class="col-md-3">
-                  <label for="PH" class="form-label">PH</label>
-                  <input type="text" class="form-control" id="phInput" placeholder="value">
-                </div>
-                <div class="col-md-3">
-                  <label for="Acidity" class="form-label">Acidity</label>
-                  <input type="text" class="form-control" id="acidityInput" placeholder="value">
-                </div>
+                
+                
               </div>
-
+          
               <!-- Row 2 -->
               <div class="row mb-3">
-                <div class="col-md-3">
-                  <label for="Density" class="form-label">Density</label>
-                  <input type="text" class="form-control" id="densityInput" placeholder="value">
+                  <div class="col-md-3">
+                      <label for="PH" class="form-label">PH</label>
+                      <input type="number" class="form-control" id="phInput" placeholder="">
+                  </div>
+                  <div class="col-md-3">
+                      <label for="Acidity" class="form-label">Acidity</label>
+                      <input type="number" class="form-control" id="acidityInput" placeholder="">
+                  </div>
+                  <div class="col-md-3">
+                      <label for="Density" class="form-label">Density</label>
+                      <input type="number" class="form-control" id="densityInput" placeholder="">
+                  </div>
+                  <div class="col-md-3">
+                    <label for="Temp" class="form-label">Temp</label>
+                    <input type="number" class="form-control" id="tempInput" value="5" placeholder="">
                 </div>
-                <div class="col-md-3">
-                  <label for="Temp" class="form-label">Temp</label>
-                  <input type="text" class="form-control" id="tempInput" placeholder="value">
-                </div>
-                <div class="col-md-3">
-                  <label for="SPGr" class="form-label">SP.Gr</label>
-                  <input type="text" class="form-control" id="spGrInput" placeholder="value">
-                </div>
-                <div class="col-md-3">
-                  <label for="Fat" class="form-label">Fat %</label>
-                  <input type="text" class="form-control" id="fatInput" placeholder="value">
-                </div>
+                
               </div>
-
+          
               <!-- Row 3 -->
               <div class="row mb-3">
-                <div class="col-md-3">
-                  <label for="SNF" class="form-label">SNF %</label>
-                  <input type="text" class="form-control" id="snfInput" placeholder="value">
-                </div>
-                <div class="col-md-3">
-                  <label for="TS" class="form-label">TS %</label>
-                  <input type="text" class="form-control" id="tsInput" placeholder="value">
-                </div>
-                <div class="col-md-3">
-                  <label for="Protein" class="form-label">Protein %</label>
-                  <input type="text" class="form-control" id="proteinInput" placeholder="value">
-                </div>
-                <div class="col-md-3">
-                  <label for="MilkUsage" class="form-label">Milk Usage</label>
-                  <select class="form-control" id="milkUsage">
-                    <option value="option1">BP1</option>
-                    <option value="option2">BP2</option>
-                  </select>
-                </div>
+                  <div class="col-md-3">
+                      <label for="SPGr" class="form-label">SP.Gr</label>
+                      <input type="number" class="form-control" id="spGrInput" placeholder="">
+                  </div>
+                  <div class="col-md-3">
+                      <label for="Fat" class="form-label">Fat %</label>
+                      <input type="number" class="form-control" id="fatInput" placeholder="">
+                  </div>
+                  <div class="col-md-3">
+                      <label for="SNF" class="form-label">SNF %</label>
+                      <input type="number" class="form-control" id="snfInput" placeholder="">
+                  </div>
+                  <div class="col-md-3">
+                      <label for="TS" class="form-label">TS %</label>
+                      <input type="number" class="form-control" id="tsInput" placeholder="">
+                  </div>
               </div>
-
+          
               <!-- Row 4 -->
               <div class="row mb-3">
-                <div class="col-md-3">
-                  <label for="BoilingTest" class="form-label">Boiling Test</label>
-                  <select class="form-control" id="boilingTest">
-                    <option value="option1">Negative</option>
-                    <option value="option2">Positive</option>
-                  </select>
-                </div>
-
-                <div class="col-md-3">
-                  <label for="Status" class="form-label">Status</label>
-                  <select class="form-control" id="status">
-                    <option value="option1">Released</option>
-                    <option value="option2">Need Modification</option>
-                  </select>
-                </div>
-
-                <div class="col-md-3">
-                  <label for="Analyst" class="form-label">Analyst</label>
-                  <input type="text" class="form-control" id="analystInput" placeholder="value">
-                </div>
+                  <div class="col-md-3">
+                      <label for="Protein" class="form-label">Protein %</label>
+                      <input type="number" class="form-control" id="proteinInput" placeholder="">
+                  </div>
+                  <div class="col-md-3">
+                      <label for="MilkUsage" class="form-label">Milk Usage</label>
+                      <select class="form-control" id="milkUsage">
+                          <option value="option1">BP1</option>
+                          <option value="option2">BP2</option>
+                      </select>
+                  </div>
+                  <div class="col-md-3">
+                      <label for="BoilingTest" class="form-label">Boiling Test</label>
+                      <select class="form-control" id="boilingTest">
+                          <option value="option1">Negative</option>
+                          <option value="option2">Positive</option>
+                      </select>
+                  </div>
+                  <div class="col-md-3">
+                      <label for="Status" class="form-label">Status</label>
+                      <select class="form-control" id="status">
+                          <option value="option1">Released</option>
+                          <option value="option2">Need Modification</option>
+                      </select>
+                  </div>
               </div>
-
+          
               <br>
               <br>
               <div class="card-action">
-                <button class="btn btn-success" onclick="openConfirmationModal()">Submit</button>
-                <!-- <button class="btn btn-success" onclick="submitFormData()">Submit</button> -->
-                <button class="btn btn-danger" onclick="resetdatafields()">Reset</button>
+                  <button class="btn btn-success" onclick="openConfirmationModal()">Submit</button>
+                  <button class="btn btn-danger" onclick="resetdatafields()">Reset</button>
               </div>
-
+          
               <div id="notification" class="notification hidden"></div>
-
-            </div>
+          </div>
+          
 
 
 
@@ -973,7 +989,7 @@
       <script type="module" src="formHandler.js"></script>
       <script type="module" src="dataRetrieval.js"></script>
       <script type="module" src="excelExport.js"></script>
-
+      <script src="../forms/script.js"></script>
 
 
       >
