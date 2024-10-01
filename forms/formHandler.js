@@ -8,7 +8,7 @@ window.submitFormData = async function() {
     const shift = document.getElementById("Shift").value;
     const productType = document.getElementById("productType").value; // Product type input
     const sampleCondition = document.getElementById("SampleCondition").value;
-    const analyst = document.getElementById("analyst").value;
+    const analyst = document.getElementById("analystInput").value;
 
     // Convert input values to numbers and handle NaN cases
     const ph = parseFloat(document.getElementById("phInput").value) || 0; // Default to 0 if NaN
