@@ -36,11 +36,9 @@ async function retrieveData() {
   if (startDate && endDate) {
     const start = new Date(startDate);
     const end = new Date(endDate);
-
     // Convert JavaScript Date to Firestore Timestamp
     const startTimestamp = Timestamp.fromDate(start);
     const endTimestamp = Timestamp.fromDate(end);
-
     queries.push(where("timestamp", ">=", startTimestamp), where("timestamp", "<=", endTimestamp));
   }
 
@@ -63,9 +61,19 @@ async function retrieveData() {
     const querySnapshot = await getDocs(finalQuery);
     let data = querySnapshot.docs.map(doc => {
       const docData = doc.data();
+      
+      // Improved timestamp handling
+      let formattedTimestamp;
+      if (docData.timestamp && docData.timestamp.toDate) {
+        formattedTimestamp = docData.timestamp.toDate();
+      } else {
+        console.warn("Timestamp is missing or not in the expected format for document: ", doc.id);
+        formattedTimestamp = new Date();  // Use current date as a fallback
+      }
+
       return {
         ...docData,
-        timestamp: docData.timestamp ? docData.timestamp.toDate().toISOString() : 'N/A' // Convert Firestore Timestamp to readable ISO string
+        timestamp: formattedTimestamp  // Keep as a Date object
       };
     });
 
