@@ -61,10 +61,13 @@ async function retrieveData() {
   try {
     const finalQuery = queries.length ? query(dataQuery, ...queries) : dataQuery;
     const querySnapshot = await getDocs(finalQuery);
-    let data = querySnapshot.docs.map(doc => ({
-      ...doc.data(),
-      timestamp: doc.data().timestamp.toDate().toISOString() // Convert Firestore Timestamp to ISO string
-    }));
+    let data = querySnapshot.docs.map(doc => {
+      const docData = doc.data();
+      return {
+        ...docData,
+        timestamp: docData.timestamp ? docData.timestamp.toDate().toISOString() : 'N/A' // Convert Firestore Timestamp to readable ISO string
+      };
+    });
 
     // Log data for debugging
     console.log("Data Retrieved: ", data);
