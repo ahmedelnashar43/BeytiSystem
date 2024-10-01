@@ -1,5 +1,5 @@
 import { db } from './firebaseConfig.js';
-import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { collection, query, where, getDocs, Timestamp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 import { exportToExcel } from './excelExport.js';
 
 async function retrieveData() {
@@ -45,7 +45,12 @@ async function retrieveData() {
   if (startDate && endDate) {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    queries.push(where("timestamp", ">=", start), where("timestamp", "<=", end));
+
+    // Convert JavaScript Date to Firestore Timestamp
+    const startTimestamp = Timestamp.fromDate(start);
+    const endTimestamp = Timestamp.fromDate(end);
+
+    queries.push(where("timestamp", ">=", startTimestamp), where("timestamp", "<=", endTimestamp));
     console.log(`Date range filter: From ${startDate} to ${endDate}`);
   }
 
