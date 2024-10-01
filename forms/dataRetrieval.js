@@ -3,115 +3,82 @@ import { collection, query, where, getDocs, Timestamp } from "https://www.gstati
 import { exportToExcel } from './excelExport.js';
 
 async function retrieveData() {
+  // Get form values
+  const startDate = document.getElementById('startDate')?.value;
+  const endDate = document.getElementById('endDate')?.value;
+  const shift = document.getElementById('shiftCriteria')?.value;
+  const sampleCondition = document.getElementById('sampleConditionCriteria')?.value;
+  const ph = document.getElementById('phCriteria')?.value;
+  const acidity = document.getElementById('acidityCriteria')?.value;
+  const density = document.getElementById('densityCriteria')?.value;
+  const temp = document.getElementById('tempCriteria')?.value;
+  const spGr = document.getElementById('spGrCriteria')?.value;
+  const fat = document.getElementById('fatCriteria')?.value;
+  const snf = document.getElementById('snfCriteria')?.value;
+  const ts = document.getElementById('tsCriteria')?.value;
+  const protein = document.getElementById('proteinCriteria')?.value;
+  const analyst = document.getElementById('analystCriteria')?.value;
+
+  // Basic form validation
+  if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+    alert('Start date must be before end date.');
+    return;
+  }
+
+  // Show loading spinner
+  document.getElementById('loadingSpinner').style.display = 'block';
+
+  // Build query with dynamic filtering
+  let dataQuery = collection(db, "chemicallab");
+  const queries = [];
+
+  // Add date range filter
+  if (startDate && endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    // Convert JavaScript Date to Firestore Timestamp
+    const startTimestamp = Timestamp.fromDate(start);
+    const endTimestamp = Timestamp.fromDate(end);
+    queries.push(where("timestamp", ">=", startTimestamp), where("timestamp", "<=", endTimestamp));
+  }
+
+  // Add other filters dynamically if values are provided
+  if (shift) queries.push(where("shift", "==", shift));
+  if (sampleCondition) queries.push(where("sampleCondition", "==", sampleCondition));
+  if (ph) queries.push(where("ph", "==", parseFloat(ph)));
+  if (acidity) queries.push(where("acidity", "==", parseFloat(acidity)));
+  if (density) queries.push(where("density", "==", parseFloat(density)));
+  if (temp) queries.push(where("temp", "==", parseFloat(temp)));
+  if (spGr) queries.push(where("spGr", "==", parseFloat(spGr)));
+  if (fat) queries.push(where("fat", "==", parseFloat(fat)));
+  if (snf) queries.push(where("snf", "==", parseFloat(snf)));
+  if (ts) queries.push(where("ts", "==", parseFloat(ts)));
+  if (protein) queries.push(where("protein", "==", parseFloat(protein)));
+  if (analyst) queries.push(where("analyst", "==", analyst));
+
   try {
-    console.log("Starting data retrieval process...");
-
-    // Get form values
-    const startDate = document.getElementById('startDate')?.value;
-    const endDate = document.getElementById('endDate')?.value;
-    const shift = document.getElementById('shiftCriteria')?.value;
-    const sampleCondition = document.getElementById('sampleConditionCriteria')?.value;
-    const ph = document.getElementById('phCriteria')?.value;
-    const acidity = document.getElementById('acidityCriteria')?.value;
-    const density = document.getElementById('densityCriteria')?.value;
-    const temp = document.getElementById('tempCriteria')?.value;
-    const spGr = document.getElementById('spGrCriteria')?.value;
-    const fat = document.getElementById('fatCriteria')?.value;
-    const snf = document.getElementById('snfCriteria')?.value;
-    const ts = document.getElementById('tsCriteria')?.value;
-    const protein = document.getElementById('proteinCriteria')?.value;
-    const analyst = document.getElementById('analystCriteria')?.value;
-
-    console.log("Form values retrieved:", { startDate, endDate, shift, sampleCondition, ph, acidity, density, temp, spGr, fat, snf, ts, protein, analyst });
-
-    // Basic form validation
-    if (startDate && endDate) {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      
-      // Set the end date to the end of the day
-      end.setHours(23, 59, 59, 999);
-
-      if (start > end) {
-        throw new Error('Start date must be before end date.');
-      }
-    } else if (startDate || endDate) {
-      throw new Error('Please select both start and end dates, or leave both empty for no date filter.');
-    }
-
-    // Show loading spinner
-    document.getElementById('loadingSpinner').style.display = 'block';
-
-    // Build query with dynamic filtering
-    let dataQuery = collection(db, "chemicallab");
-    const queries = [];
-
-    // Add date range filter
-    if (startDate && endDate) {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      // Set the end date to the end of the day
-      end.setHours(23, 59, 59, 999);
-      
-      // Convert JavaScript Date to Firestore Timestamp
-      const startTimestamp = Timestamp.fromDate(start);
-      const endTimestamp = Timestamp.fromDate(end);
-      queries.push(where("timestamp", ">=", startTimestamp), where("timestamp", "<=", endTimestamp));
-    }
-
-    // Add other filters dynamically if values are provided
-    if (shift) queries.push(where("shift", "==", shift));
-    if (sampleCondition) queries.push(where("sampleCondition", "==", sampleCondition));
-    if (ph) queries.push(where("ph", "==", parseFloat(ph)));
-    if (acidity) queries.push(where("acidity", "==", parseFloat(acidity)));
-    if (density) queries.push(where("density", "==", parseFloat(density)));
-    if (temp) queries.push(where("temp", "==", parseFloat(temp)));
-    if (spGr) queries.push(where("spGr", "==", parseFloat(spGr)));
-    if (fat) queries.push(where("fat", "==", parseFloat(fat)));
-    if (snf) queries.push(where("snf", "==", parseFloat(snf)));
-    if (ts) queries.push(where("ts", "==", parseFloat(ts)));
-    if (protein) queries.push(where("protein", "==", parseFloat(protein)));
-    if (analyst) queries.push(where("analyst", "==", analyst));
-
-    console.log("Queries built:", queries);
-
     const finalQuery = queries.length ? query(dataQuery, ...queries) : dataQuery;
-    console.log("Executing query...");
     const querySnapshot = await getDocs(finalQuery);
-    console.log("Query executed. Number of documents:", querySnapshot.size);
-
     let data = querySnapshot.docs.map(doc => {
       const docData = doc.data();
-      
-      // Improved timestamp handling
-      let formattedTimestamp;
-      if (docData.timestamp && docData.timestamp.toDate) {
-        formattedTimestamp = docData.timestamp.toDate();
-      } else {
-        console.warn("Timestamp is missing or not in the expected format for document:", doc.id);
-        formattedTimestamp = new Date();  // Use current date as a fallback
-      }
-
       return {
         ...docData,
-        timestamp: formattedTimestamp  // Keep as a Date object
+        timestamp: docData.timestamp ? docData.timestamp.toDate().toISOString() : 'N/A' // Convert Firestore Timestamp to readable ISO string
       };
     });
 
-    console.log("Data processed. Number of items:", data.length);
-    console.log("Sample data item:", data.length > 0 ? data[0] : "No data");
+    // Log data for debugging
+    console.log("Data Retrieved: ", data);
 
     if (data.length > 0) {
-      console.log("Exporting data to Excel...");
-      await exportToExcel(data);  // Export data to Excel
-      console.log("Data exported successfully");
+      exportToExcel(data);  // Export data to Excel
     } else {
       console.warn("No data matches the criteria.");
       alert("No data found for the selected criteria.");
     }
   } catch (error) {
-    console.error("Error in retrieveData function:", error);
-    alert(`Error retrieving or exporting data: ${error.message}`);
+    console.error("Error retrieving documents: ", error);
+    alert("Error retrieving data. Please try again.");
   } finally {
     // Hide loading spinner
     document.getElementById('loadingSpinner').style.display = 'none';
