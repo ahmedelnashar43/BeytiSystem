@@ -38,7 +38,7 @@ async function retrieveData() {
   });
 
   // Build query with dynamic filtering
-  let dataQuery = collection(db, "labData");
+  let dataQuery = collection(db, "chemicallab");
   const queries = [];
 
   // Add date range filter only if both startDate and endDate are provided
