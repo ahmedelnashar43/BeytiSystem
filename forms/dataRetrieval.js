@@ -20,8 +20,19 @@ async function retrieveData() {
   const analyst = document.getElementById('analystCriteria')?.value;
 
   // Basic form validation
-  if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
-    alert('Start date must be before end date.');
+  if (startDate && endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    
+    // Set the end date to the end of the day
+    end.setHours(23, 59, 59, 999);
+
+    if (start > end) {
+      alert('Start date must be before end date.');
+      return;
+    }
+  } else if (startDate || endDate) {
+    alert('Please select both start and end dates, or leave both empty for no date filter.');
     return;
   }
 
@@ -36,6 +47,9 @@ async function retrieveData() {
   if (startDate && endDate) {
     const start = new Date(startDate);
     const end = new Date(endDate);
+    // Set the end date to the end of the day
+    end.setHours(23, 59, 59, 999);
+    
     // Convert JavaScript Date to Firestore Timestamp
     const startTimestamp = Timestamp.fromDate(start);
     const endTimestamp = Timestamp.fromDate(end);
